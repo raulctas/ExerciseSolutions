@@ -6,84 +6,83 @@ namespace Hackerrank
 {
     class Solution
     {
-        static void Main(String[] args)
+        static int balancedForest(int[] c, int[][] edges)
         {
-            int q = int.Parse(Console.ReadLine());
-
-            for (int t = 0; t < q; t++)
+            Dictionary<int, Node> nodes = new Dictionary<int, Node>();
+            for (int i = 0; i < c.Length; i++)
+                nodes.Add(i + 1, new Node(i + 1, c[i]));
+            for (int i = 0; i < edges.Length; i++)
             {
-                var sv = Console.ReadLine().Trim().Split(' ').Select(x => int.Parse(x)).ToArray();
+                int father = edges[i][0];
+                int child = edges[i][1];
+                nodes[father].AddNode(nodes[child]);
+            }
 
-                Graph graph = new Graph(sv[0]);
+            int total = nodes.Values.Sum(n => n.Value);
 
-                int m = sv[1];
-                for (int i = 0; i < m; i++)
+            List<int> values = nodes.Values.Select(n => n.TreeValue).ToList();
+            values.Sort();
+
+            for (int i = values.Count - 2; i > 0; i--)
+                if (values[i] == values[i - 1])
+                    return total - 2 * values[i];
+            return -1;
+        }
+
+        static void Main(string[] args)
+        {
+            int q = Convert.ToInt32(Console.ReadLine());
+
+            for (int qItr = 0; qItr < q; qItr++)
+            {
+                int n = Convert.ToInt32(Console.ReadLine());
+
+                int[] c = Array.ConvertAll(Console.ReadLine().Split(' '), cTemp => Convert.ToInt32(cTemp))
+                ;
+
+                int[][] edges = new int[n - 1][];
+
+                for (int i = 0; i < n - 1; i++)
                 {
-                    var uv = Console.ReadLine().Trim().Split(' ').Select(x => int.Parse(x)).ToArray();
-                    graph.AddEdge(uv[0], uv[1]);
+                    edges[i] = Array.ConvertAll(Console.ReadLine().Split(' '), edgesTemp => Convert.ToInt32(edgesTemp));
                 }
 
-                int startId = int.Parse(Console.ReadLine().Trim());
+                int result = balancedForest(c, edges);
 
-                int[] result = graph.ShortestReach(startId);
-
-                for (int i = 1; i < result.Length; i++)
-                    if (i != startId)
-                        Console.Write(result[i] + (i != result.Length - 1 ? " " : string.Empty));
-                Console.WriteLine();
+                Console.WriteLine(result);
             }
         }
     }
 
-    public class Graph
+    class Tree
     {
-        const int DISCONNECTED_LENGTH_EDGE = -1;
-        const int LENGTH_EDGE = 6;
-        List<List<int>> AdjLst;
-        int Size;
+        Node Root;
 
-        public Graph(int size)
+        public Tree()
         {
-            AdjLst = new List<List<int>>();
-            Size = size;
-            for (int i = 0; i <= Size; i++)
-                AdjLst.Add(new List<int>());
+
+        }
+    }
+
+    class Node
+    {
+        public Dictionary<int, Node> Nodes;
+        public int Id { get; set; }
+        public int Value { get; set; }
+        public int TreeValue { get; set; }
+
+        public Node(int id, int value)
+        {
+            Id = id;
+            Value = value;
+            TreeValue = value;
+            Nodes = new Dictionary<int, Node>();
         }
 
-        public void AddEdge(int first, int second)
+        public void AddNode(Node node)
         {
-            AdjLst[first].Add(second);
-            AdjLst[second].Add(first);
-        }
-
-        public int[] ShortestReach(int startId)
-        {
-            int[] distances = new int[Size + 1];
-            for (int i = 0; i < distances.Length; i++)
-                distances[i] = DISCONNECTED_LENGTH_EDGE;
-
-            Queue<int> que = new Queue<int>();
-
-            que.Enqueue(startId);
-            distances[startId] = 0;
-
-            bool[] seen = new bool[Size + 1];
-            seen[startId] = true;
-
-            while (que.Count > 0)
-            {
-                int curr = que.Dequeue();
-                foreach (int node in AdjLst[curr])
-                {
-                    if (!seen[node])
-                    {
-                        que.Enqueue(node);
-                        seen[node] = true;
-                        distances[node] = distances[curr] + LENGTH_EDGE;
-                    }
-                }
-            }
-            return distances;
+            Nodes[node.Id] = node;
+            TreeValue += node.TreeValue;
         }
     }
 }
