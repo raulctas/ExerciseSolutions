@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "hMh77ur8YBbpE4BLIl/mpb+qqZq4qiSinWKmBITvOhsxURERQTIKmOjATMC1ibGsohFK/y6khVdX2OFnnNhS7Q==",
+  "dgSpecHash": "zIUaVdd6A5s/RA5wP9PWiVCLQKpAK4/92bP+L4o3w9SjablZKdhOeeTaSCOfZMFLYu91ylrEmyR+pJRelVen/g==",
   "success": true,
-  "projectFilePath": "D:\\Personales\\Proyectos\\HackerrankSolutions\\Hackerrank\\Hackerrank.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "D:\\Personales\\Proyectos\\ExerciseSolutions\\Hackerrank\\Hackerrank.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\rleon\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.13\\microsoft.netcore.app.host.win-x64.3.1.13.nupkg.sha512"
+  ],
   "logs": []
 }

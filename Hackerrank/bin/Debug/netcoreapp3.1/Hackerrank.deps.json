@@ -7,14 +7,27 @@
   "targets": {
     ".NETCoreApp,Version=v3.1": {
       "Hackerrank/1.0.0": {
+        "dependencies": {
+          "Implementaciones": "1.0.0"
+        },
         "runtime": {
           "Hackerrank.dll": {}
+        }
+      },
+      "Implementaciones/1.0.0": {
+        "runtime": {
+          "Implementaciones.exe": {}
         }
       }
     }
   },
   "libraries": {
     "Hackerrank/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Implementaciones/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

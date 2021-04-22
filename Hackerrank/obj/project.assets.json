@@ -1,11 +1,29 @@
 {
   "version": 3,
   "targets": {
-    ".NETCoreApp,Version=v3.1": {}
+    ".NETCoreApp,Version=v3.1": {
+      "Implementaciones/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/Implementaciones.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Implementaciones.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "Implementaciones/1.0.0": {
+      "type": "project",
+      "path": "../Implementaciones/Implementaciones.csproj",
+      "msbuildProject": "../Implementaciones/Implementaciones.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    ".NETCoreApp,Version=v3.1": []
+    ".NETCoreApp,Version=v3.1": [
+      "Implementaciones >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\rleon\\.nuget\\packages\\": {},
@@ -14,11 +32,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Personales\\Proyectos\\HackerrankSolutions\\Hackerrank\\Hackerrank.csproj",
+      "projectUniqueName": "D:\\Personales\\Proyectos\\ExerciseSolutions\\Hackerrank\\Hackerrank.csproj",
       "projectName": "Hackerrank",
-      "projectPath": "D:\\Personales\\Proyectos\\HackerrankSolutions\\Hackerrank\\Hackerrank.csproj",
+      "projectPath": "D:\\Personales\\Proyectos\\ExerciseSolutions\\Hackerrank\\Hackerrank.csproj",
       "packagesPath": "C:\\Users\\rleon\\.nuget\\packages\\",
-      "outputPath": "D:\\Personales\\Proyectos\\HackerrankSolutions\\Hackerrank\\obj\\",
+      "outputPath": "D:\\Personales\\Proyectos\\ExerciseSolutions\\Hackerrank\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -37,7 +55,11 @@
       "frameworks": {
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\Personales\\Proyectos\\ExerciseSolutions\\Implementaciones\\Implementaciones.csproj": {
+              "projectPath": "D:\\Personales\\Proyectos\\ExerciseSolutions\\Implementaciones\\Implementaciones.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -59,6 +81,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[3.1.13, 3.1.13]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
