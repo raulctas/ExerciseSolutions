@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Hackerrank.Implementations
+namespace Implementaciones
 {
     class BinaryTree
     {

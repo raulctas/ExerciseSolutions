@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Hackerrank.Implementations
+namespace Implementaciones
 {
     // A C# program for Dijkstra's single
     // source shortest path algorithm.

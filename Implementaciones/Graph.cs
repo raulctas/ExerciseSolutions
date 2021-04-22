@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Hackerrank.Implementations
+namespace Implementaciones
 {
     public class Graph
     {
