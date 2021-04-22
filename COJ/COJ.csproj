@@ -43,12 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Primes.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Program1288.cs" />
-    <Compile Include="Program1390.cs" />
-    <Compile Include="Program1658.cs" />
-    <Compile Include="Program2019.cs" />
+    <Compile Include="Success\Program1288.cs" />
+    <Compile Include="Success\Program1390.cs" />
+    <Compile Include="Success\Program1658.cs" />
+    <Compile Include="Success\Program2019.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
