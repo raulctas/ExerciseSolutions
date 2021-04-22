@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BalancedBrackets
+namespace Hackerrank
 {
-    class Solution
+    class BalancedBrackets
     {
         static string IsBalanced(string s)
         {

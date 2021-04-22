@@ -48,6 +48,8 @@
     <Compile Include="Dijkstra\Dijkstras.cs" />
     <Compile Include="EditDistance.cs" />
     <Compile Include="Graph.cs" />
+    <Compile Include="LongestIncreaseSubsequence.cs" />
+    <Compile Include="OperacionesExpresiones.cs" />
     <Compile Include="Primes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

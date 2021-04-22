@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Contacts
+namespace Hackerrank
 {
-    class Solution
+    class Contacts1
     {
         static int[] Contacts(string[][] queries)
         {

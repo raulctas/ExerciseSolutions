@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SwapNodes
+namespace Hackerrank
 {
-    class Solution
+    class SwapNodes1
     {
         static int[][] SwapNodes(int[][] indexes, int[] queries)
         {

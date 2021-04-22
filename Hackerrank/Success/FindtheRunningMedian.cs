@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FindtheRunningMedian
+namespace Hackerrank
 {
-    class Solution
+    class FindtheRunningMedian
     {
         static double[] RunningMedian(int[] a)
         {

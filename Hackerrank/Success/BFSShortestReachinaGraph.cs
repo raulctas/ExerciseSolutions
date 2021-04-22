@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BFSShortestReachinaGraph
+namespace Hackerrank
 {
-    class Solution
+    class BFSShortestReachinaGraph
     {
         const int LENGTH_EDGE = 6;
         const int DISCONNECTED_LENGTH_EDGE = -1;
