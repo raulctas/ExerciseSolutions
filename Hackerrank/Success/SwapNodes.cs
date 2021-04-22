@@ -64,44 +64,44 @@ namespace Hackerrank
 
             Console.WriteLine(String.Join("\n", result.Select(x => String.Join(" ", x))));
         }
-    }
 
-    class Node
-    {
-        public Node LeftNode { get; set; }
-        public Node RightNode { get; set; }
-        public int Id { get; set; }
-        public int Level { get; set; }
-
-        public Node(int id, int level)
+        class Node
         {
-            Id = id;
-            Level = level;
-        }
+            public Node LeftNode { get; set; }
+            public Node RightNode { get; set; }
+            public int Id { get; set; }
+            public int Level { get; set; }
 
-        public void SwapNodes(int k)
-        {
-            if (Level % k == 0)
+            public Node(int id, int level)
             {
-                Node aux = RightNode;
-                RightNode = LeftNode;
-                LeftNode = aux;
+                Id = id;
+                Level = level;
             }
-            if (LeftNode != null)
-                LeftNode.SwapNodes(k);
-            if (RightNode != null)
-                RightNode.SwapNodes(k);
-        }
 
-        public List<int> InOrder()
-        {
-            List<int> result = new List<int>();
-            if (LeftNode != null)
-                result.AddRange(LeftNode.InOrder());
-            result.Add(Id);
-            if (RightNode != null)
-                result.AddRange(RightNode.InOrder());
-            return result;
+            public void SwapNodes(int k)
+            {
+                if (Level % k == 0)
+                {
+                    Node aux = RightNode;
+                    RightNode = LeftNode;
+                    LeftNode = aux;
+                }
+                if (LeftNode != null)
+                    LeftNode.SwapNodes(k);
+                if (RightNode != null)
+                    RightNode.SwapNodes(k);
+            }
+
+            public List<int> InOrder()
+            {
+                List<int> result = new List<int>();
+                if (LeftNode != null)
+                    result.AddRange(LeftNode.InOrder());
+                result.Add(Id);
+                if (RightNode != null)
+                    result.AddRange(RightNode.InOrder());
+                return result;
+            }
         }
     }
 }

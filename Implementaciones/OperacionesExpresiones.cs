@@ -4,7 +4,7 @@ namespace Implementaciones
 {
     class OperacionesExpresiones
     {
-        static void Main(string[] args)
+        static void MainOperacionesExpresiones(string[] args)
         {
             while (true)
             {

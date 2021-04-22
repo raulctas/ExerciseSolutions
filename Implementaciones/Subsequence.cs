@@ -9,7 +9,7 @@ namespace Implementaciones
     {
         static Random r = new Random();
 
-        static void Main(string[] args)
+        static void MainSubsequence(string[] args)
         {
             //Testing one by one.
             //while (true)

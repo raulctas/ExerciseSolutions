@@ -116,39 +116,39 @@ namespace Hackerrank
 
             return results;
         }
-    }
 
-    class Graph
-    {
-        public Dictionary<int, Node> Nodes;
-
-        public Graph(int n)
+        class Graph
         {
-            Nodes = new Dictionary<int, Node>();
-            for (int i = 1; i <= n; i++)
-                Nodes.Add(i, new Node(i));
+            public Dictionary<int, Node> Nodes;
+
+            public Graph(int n)
+            {
+                Nodes = new Dictionary<int, Node>();
+                for (int i = 1; i <= n; i++)
+                    Nodes.Add(i, new Node(i));
+            }
+
+            public void AddEdge(int u, int v)
+            {
+                Node nodeU = Nodes[u];
+                Node nodeV = Nodes[v];
+                if (!nodeU.Nodes.ContainsKey(v))
+                    nodeU.Nodes.Add(v, nodeV);
+                if (!nodeU.Nodes.ContainsKey(u))
+                    nodeV.Nodes.Add(u, nodeU);
+            }
         }
 
-        public void AddEdge(int u, int v)
+        class Node
         {
-            Node nodeU = Nodes[u];
-            Node nodeV = Nodes[v];
-            if (!nodeU.Nodes.ContainsKey(v))
-                nodeU.Nodes.Add(v, nodeV);
-            if (!nodeU.Nodes.ContainsKey(u))
-                nodeV.Nodes.Add(u, nodeU);
-        }
-    }
+            public int Id;
+            public SortedList<int, Node> Nodes;
 
-    class Node
-    {
-        public int Id;
-        public SortedList<int, Node> Nodes;
-
-        public Node(int id)
-        {
-            Id = id;
-            Nodes = new SortedList<int, Node>();
+            public Node(int id)
+            {
+                Id = id;
+                Nodes = new SortedList<int, Node>();
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Implementaciones
 {
     class LongestIncreaseSubsequence1
     {
-        static void Main(string[] args)
+        static void MainLongestIncreaseSubsequence1(string[] args)
         {
             List<int> result = new List<int>() { 10, 22, 9, 33, 21, 50, 41, 60 };
             int count = LongestIncreaseSubsequenceRecursive(result);

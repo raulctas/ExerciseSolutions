@@ -6,7 +6,7 @@ namespace Implementaciones
     {
         static Random r = new Random();
 
-        static void Main(string[] args)
+        static void MainEditDistance1(string[] args)
         {
             Test(LevenshteinDistance);
             return;

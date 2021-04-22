@@ -7,7 +7,7 @@ namespace Implementaciones
     {
         static Random r = new Random();
 
-        static void Main(string[] args)
+        static void MainBinarySearch(string[] args)
         {
             int wrong_result = 0;
             int count_test = 10000;//r.Next(1, 1000);
