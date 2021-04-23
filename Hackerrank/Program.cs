@@ -1,88 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace Hackerrank
+class Solution
 {
-    class Solution
+    static void Main(string[] args)
     {
-        static int balancedForest(int[] c, int[][] edges)
+        int n = Convert.ToInt32(Console.ReadLine());
+        string[] genes = Console.ReadLine().Split(' ');
+        int[] health = Array.ConvertAll(Console.ReadLine().Split(' '), healthTemp => Convert.ToInt32(healthTemp));
+        int s = Convert.ToInt32(Console.ReadLine());
+
+        Dictionary<int, Dictionary<int, Dictionary<string, int>>> data = BuildData(genes, health);
+
+        int unhealthiest = int.MaxValue;
+        int healthiest = int.MinValue;
+        for (int sItr = 0; sItr < s; sItr++)
         {
-            Dictionary<int, Node> nodes = new Dictionary<int, Node>();
-            for (int i = 0; i < c.Length; i++)
-                nodes.Add(i + 1, new Node(i + 1, c[i]));
-            for (int i = 0; i < edges.Length; i++)
-            {
-                int father = edges[i][0];
-                int child = edges[i][1];
-                nodes[father].AddNode(nodes[child]);
-            }
+            string[] firstLastd = Console.ReadLine().Split(' ');
+            int first = Convert.ToInt32(firstLastd[0]);
+            int last = Convert.ToInt32(firstLastd[1]);
+            string d = firstLastd[2];
 
-            int total = nodes.Values.Sum(n => n.Value);
-
-            List<int> values = nodes.Values.Select(n => n.TreeValue).ToList();
-            values.Sort();
-
-            for (int i = values.Count - 2; i > 0; i--)
-                if (values[i] == values[i - 1])
-                    return total - 2 * values[i];
-            return -1;
+            int value = GetTotalHealth(data, first, last, d);
+            if (value < unhealthiest)
+                unhealthiest = value;
+            if (value > healthiest)
+                healthiest = value;
         }
+        Console.WriteLine($"{unhealthiest} {healthiest}");
+    }
 
-        static void Main(string[] args)
+    private static Dictionary<int, Dictionary<int, Dictionary<string, int>>> BuildData(string[] genes, int[] health)
+    {
+        Dictionary<int, Dictionary<int, Dictionary<string, int>>> data = new Dictionary<int, Dictionary<int, Dictionary<string, int>>>();
+        for (int i = 0; i < genes.Length; i++)
         {
-            int q = Convert.ToInt32(Console.ReadLine());
-
-            for (int qItr = 0; qItr < q; qItr++)
+            if (!data.ContainsKey(i))
+                data[i] = new Dictionary<int, Dictionary<string, int>>();
+            for (int j = i; j < genes.Length; j++)
             {
-                int n = Convert.ToInt32(Console.ReadLine());
+                if (!data[i].ContainsKey(j))
+                    data[i][j] = j == i ? new Dictionary<string, int>() : new Dictionary<string, int>(data[i][j - 1]);
+                if (data[i][j].ContainsKey(genes[j]))
+                    data[i][j][genes[j]] += health[j];
+                else
+                    data[i][j][genes[j]] = health[j];
+            }
+        }
+        return data;
+    }
 
-                int[] c = Array.ConvertAll(Console.ReadLine().Split(' '), cTemp => Convert.ToInt32(cTemp))
-                ;
-
-                int[][] edges = new int[n - 1][];
-
-                for (int i = 0; i < n - 1; i++)
+    private static int GetTotalHealth(Dictionary<int, Dictionary<int, Dictionary<string, int>>> data, int first, int second, string d)
+    {
+        int result = 0;
+        for (int i = 0; i < d.Length; i++)
+        {
+            bool subsequentFound = false;
+            for (int j = i; j < d.Length; j++)
+            {
+                string s = d.Substring(i, j - i + 1);
+                if (data[first][second].ContainsKey(s))
                 {
-                    edges[i] = Array.ConvertAll(Console.ReadLine().Split(' '), edgesTemp => Convert.ToInt32(edgesTemp));
+                    result += data[first][second][s];
+                    subsequentFound = true;
                 }
-
-                int result = balancedForest(c, edges);
-
-                Console.WriteLine(result);
+                else if (subsequentFound)
+                    break;
             }
         }
-    }
-
-    class Tree
-    {
-        Node Root;
-
-        public Tree()
-        {
-
-        }
-    }
-
-    class Node
-    {
-        public Dictionary<int, Node> Nodes;
-        public int Id { get; set; }
-        public int Value { get; set; }
-        public int TreeValue { get; set; }
-
-        public Node(int id, int value)
-        {
-            Id = id;
-            Value = value;
-            TreeValue = value;
-            Nodes = new Dictionary<int, Node>();
-        }
-
-        public void AddNode(Node node)
-        {
-            Nodes[node.Id] = node;
-            TreeValue += node.TreeValue;
-        }
+        return result;
     }
 }
