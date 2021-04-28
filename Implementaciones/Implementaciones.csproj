@@ -54,7 +54,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Subsequence.cs" />
-    <Compile Include="Tree.cs" />
+    <Compile Include="Tree\TreeChar.cs" />
+    <Compile Include="Tree\BinaryTree.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

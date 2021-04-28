@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 class Solution
 {
@@ -10,7 +11,7 @@ class Solution
         int[] health = Array.ConvertAll(Console.ReadLine().Split(' '), healthTemp => Convert.ToInt32(healthTemp));
         int s = Convert.ToInt32(Console.ReadLine());
 
-        Dictionary<int, Dictionary<int, Dictionary<string, int>>> data = BuildData(genes, health);
+        TreeChar root = new TreeChar(genes.ToList());
 
         int unhealthiest = int.MaxValue;
         int healthiest = int.MinValue;
@@ -21,7 +22,7 @@ class Solution
             int last = Convert.ToInt32(firstLastd[1]);
             string d = firstLastd[2];
 
-            int value = GetTotalHealth(data, first, last, d);
+            int value = GetTotalHealth(root, genes, health, first, last, d);
             if (value < unhealthiest)
                 unhealthiest = value;
             if (value > healthiest)
@@ -30,44 +31,94 @@ class Solution
         Console.WriteLine($"{unhealthiest} {healthiest}");
     }
 
-    private static Dictionary<int, Dictionary<int, Dictionary<string, int>>> BuildData(string[] genes, int[] health)
+    private static int GetTotalHealth(TreeChar tree, string[] genes, int[] health, int first, int last, string d)
     {
-        Dictionary<int, Dictionary<int, Dictionary<string, int>>> data = new Dictionary<int, Dictionary<int, Dictionary<string, int>>>();
-        for (int i = 0; i < genes.Length; i++)
-        {
-            if (!data.ContainsKey(i))
-                data[i] = new Dictionary<int, Dictionary<string, int>>();
-            for (int j = i; j < genes.Length; j++)
-            {
-                if (!data[i].ContainsKey(j))
-                    data[i][j] = j == i ? new Dictionary<string, int>() : new Dictionary<string, int>(data[i][j - 1]);
-                if (data[i][j].ContainsKey(genes[j]))
-                    data[i][j][genes[j]] += health[j];
-                else
-                    data[i][j][genes[j]] = health[j];
-            }
-        }
-        return data;
+        Dictionary<string, List<int>> ahoCorasickMatching = tree.AhoCorasickMatching(d);
+        int result = 0;
+        for (int i = first; i <= last; i++)
+            if (ahoCorasickMatching.ContainsKey(genes[i]))
+                ahoCorasickMatching[genes[i]].ForEach(a => result += health[i]);
+        return result;
     }
 
-    private static int GetTotalHealth(Dictionary<int, Dictionary<int, Dictionary<string, int>>> data, int first, int second, string d)
+    class TreeChar
     {
-        int result = 0;
-        for (int i = 0; i < d.Length; i++)
+        public TreeCharNode Root;
+
+        public TreeChar(List<string> words)
         {
-            bool subsequentFound = false;
-            for (int j = i; j < d.Length; j++)
-            {
-                string s = d.Substring(i, j - i + 1);
-                if (data[first][second].ContainsKey(s))
-                {
-                    result += data[first][second][s];
-                    subsequentFound = true;
-                }
-                else if (subsequentFound)
-                    break;
-            }
+            Root = new TreeCharNode(' ');
+            foreach (var word in words)
+                AddString(Root, word, 0);
         }
-        return result;
+
+        private void AddString(TreeCharNode node, string word, int index)
+        {
+            node.NumberOfWords++;
+            if (index == word.Length)
+            {
+                node.Word = word;
+                return;
+            }
+            if (!node.Children.ContainsKey(word[index]))
+            {
+                TreeCharNode newTreeCharNode = new TreeCharNode(word[index]);
+                newTreeCharNode.Parent = node;
+                node.Children.Add(word[index], newTreeCharNode);
+            }
+            AddString(node.Children[word[index]], word, index + 1);
+        }
+
+        public Dictionary<string, List<int>> AhoCorasickMatching(string word)
+        {
+            Dictionary<string, List<int>> result = new Dictionary<string, List<int>>();
+
+            TreeCharNode current = Root;
+
+            for (int i = 0; i < word.Length; i++)
+            {
+
+                TreeCharNode trans = null;
+                while (trans == null)
+                {
+                    if (current.Children.ContainsKey(word[i]))
+                        trans = current.Children[word[i]];
+                    if (current == Root)
+                        break;
+                    if (trans == null)
+                        current = current.Parent;
+                }
+                if (trans != null)
+                    current = trans;
+
+                if (current.Children.ContainsKey(word[i]))
+                {
+                    current = current.Children[word[i]];
+                    if (!string.IsNullOrEmpty(current.Word))
+                    {
+                        if (!result.ContainsKey(current.Word))
+                            result[current.Word] = new List<int>();
+                        result[current.Word].Add(i - current.Word.Length + 1);
+                    }
+                }
+            }
+
+            return result;
+        }
+    }
+
+    class TreeCharNode
+    {
+        public char Id;
+        public TreeCharNode Parent;
+        public Dictionary<char, TreeCharNode> Children;
+        public int NumberOfWords;
+        public string Word;
+
+        public TreeCharNode(char id)
+        {
+            Id = id;
+            Children = new Dictionary<char, TreeCharNode>();
+        }
     }
 }
