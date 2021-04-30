@@ -33,11 +33,15 @@ class Solution
 
     private static int GetTotalHealth(TreeChar tree, string[] genes, int[] health, int first, int last, string d)
     {
-        Dictionary<string, List<int>> ahoCorasickMatching = tree.AhoCorasickMatching(d);
+        List<StringSearchResult> ahoCorasickMatching = tree.FindAll(d);
+
+        Dictionary<string, List<int>> ahoCorasickMatchingDict = ahoCorasickMatching.GroupBy(a => a.Keyword).ToDictionary(a => a.Key, a => a.Select(b => b.Index).ToList());
         int result = 0;
         for (int i = first; i <= last; i++)
-            if (ahoCorasickMatching.ContainsKey(genes[i]))
-                ahoCorasickMatching[genes[i]].ForEach(a => result += health[i]);
+            if (ahoCorasickMatchingDict.ContainsKey(genes[i]))
+                foreach (int index in ahoCorasickMatchingDict[genes[i]])
+                    if (index + genes[i].Length < last)
+                        result += health[index];
         return result;
     }
 
@@ -47,63 +51,160 @@ class Solution
 
         public TreeChar(List<string> words)
         {
+            BuildTree(words);
+        }
+
+        private void BuildTree(List<string> words)
+        {
             Root = new TreeCharNode(' ');
-            foreach (var word in words)
-                AddString(Root, word, 0);
+            foreach (string w in words)
+            {
+                TreeCharNode nd = Root;
+                foreach (char c in w)
+                {
+                    TreeCharNode ndNew = null;
+                    if (nd.Children.ContainsKey(c))
+                        ndNew = nd.Children[c];
+
+                    if (ndNew == null)
+                    {
+                        ndNew = new TreeCharNode(c, nd);
+                        nd.Children.Add(c, ndNew);
+                    }
+                    nd = ndNew;
+                }
+                nd.Words.Add(w);
+            }
+
+            // Find failure functions
+            Queue<TreeCharNode> nodes = new Queue<TreeCharNode>();
+
+            // level 1 nodes - fail to root node
+            foreach (TreeCharNode nd in Root.Children.Values)
+            {
+                nd.Failure = Root;
+                foreach (TreeCharNode trans in nd.Children.Values)
+                    nodes.Enqueue(trans);
+            }
+
+            // other nodes - using BFS
+            while (nodes.Any())
+            {
+                TreeCharNode nd = nodes.Dequeue();
+
+                TreeCharNode r = nd.Parent.Failure;
+
+                while (r != null && !r.Children.ContainsKey(nd.Id))
+                    r = r.Failure;
+
+                if (r == null)
+                    nd.Failure = Root;
+                else
+                {
+                    nd.Failure = r.Children[nd.Id];
+                    foreach (string word in nd.Failure.Words)
+                        nd.Words.Add(word);
+                }
+
+                foreach (TreeCharNode child in nd.Children.Values)
+                    nodes.Enqueue(child);
+            }
+            Root.Failure = Root;
         }
 
-        private void AddString(TreeCharNode node, string word, int index)
+        /// <summary>
+		/// Searches passed text and returns all occurrences of any keyword
+		/// </summary>
+		/// <param name="text">Text to search</param>
+		/// <returns>Array of occurrences</returns>
+		public List<StringSearchResult> FindAll(string text)
         {
-            node.NumberOfWords++;
-            if (index == word.Length)
+            var ret = new List<StringSearchResult>();
+            TreeCharNode ptr = Root;
+            int index = 0;
+
+            while (index < text.Length)
             {
-                node.Word = word;
-                return;
-            }
-            if (!node.Children.ContainsKey(word[index]))
-            {
-                TreeCharNode newTreeCharNode = new TreeCharNode(word[index]);
-                newTreeCharNode.Parent = node;
-                node.Children.Add(word[index], newTreeCharNode);
-            }
-            AddString(node.Children[word[index]], word, index + 1);
-        }
-
-        public Dictionary<string, List<int>> AhoCorasickMatching(string word)
-        {
-            Dictionary<string, List<int>> result = new Dictionary<string, List<int>>();
-
-            TreeCharNode current = Root;
-
-            for (int i = 0; i < word.Length; i++)
-            {
-
                 TreeCharNode trans = null;
                 while (trans == null)
                 {
-                    if (current.Children.ContainsKey(word[i]))
-                        trans = current.Children[word[i]];
-                    if (current == Root)
+                    trans = ptr.Children.ContainsKey(text[index]) ? ptr.Children[text[index]] : null;
+                    if (ptr == Root)
                         break;
                     if (trans == null)
-                        current = current.Parent;
+                        ptr = ptr.Failure;
                 }
                 if (trans != null)
-                    current = trans;
+                    ptr = trans;
 
-                if (current.Children.ContainsKey(word[i]))
-                {
-                    current = current.Children[word[i]];
-                    if (!string.IsNullOrEmpty(current.Word))
-                    {
-                        if (!result.ContainsKey(current.Word))
-                            result[current.Word] = new List<int>();
-                        result[current.Word].Add(i - current.Word.Length + 1);
-                    }
-                }
+                foreach (string found in ptr.Words)
+                    ret.Add(new StringSearchResult(index - found.Length + 1, found));
+                index++;
             }
+            return ret;
+        }
 
-            return result;
+
+        /// <summary>
+        /// Searches passed text and returns first occurrence of any keyword
+        /// </summary>
+        /// <param name="text">Text to search</param>
+        /// <returns>First occurrence of any keyword (or StringSearchResult.Empty if text doesn't contain any keyword)</returns>
+        //public StringSearchResult FindFirst(string text)
+        //{
+        //    TreeCharNode ptr = Root;
+        //    int index = 0;
+
+        //    while (index < text.Length)
+        //    {
+        //        TreeCharNode trans = null;
+        //        while (trans == null)
+        //        {
+        //            trans = ptr.Children.ContainsKey(text[index]) ? ptr.Children[text[index]] : null;
+        //            if (ptr == Root)
+        //                break;
+        //            if (trans == null)
+        //                ptr = ptr.Failure;
+        //        }
+        //        if (trans != null)
+        //            ptr = trans;
+
+        //        foreach (string found in ptr.Words)
+        //            return new StringSearchResult(index - found.Length + 1, found);
+        //        index++;
+        //    }
+        //    return new StringSearchResult(-1, "");
+        //}
+
+
+        /// <summary>
+        /// Searches passed text and returns true if text contains any keyword
+        /// </summary>
+        /// <param name="text">Text to search</param>
+        /// <returns>True when text contains any keyword</returns>
+        public bool ContainsAny(string text)
+        {
+            TreeCharNode ptr = Root;
+            int index = 0;
+
+            while (index < text.Length)
+            {
+                TreeCharNode trans = null;
+                while (trans == null)
+                {
+                    trans = ptr.Children.ContainsKey(text[index]) ? ptr.Children[text[index]] : null;
+                    if (ptr == Root)
+                        break;
+                    if (trans == null)
+                        ptr = ptr.Failure;
+                }
+                if (trans != null) ptr = trans;
+
+                if (ptr.Words.Any())
+                    return true;
+                index++;
+            }
+            return false;
         }
     }
 
@@ -112,13 +213,31 @@ class Solution
         public char Id;
         public TreeCharNode Parent;
         public Dictionary<char, TreeCharNode> Children;
-        public int NumberOfWords;
-        public string Word;
+        public List<string> Words;
+        public TreeCharNode Failure;
 
         public TreeCharNode(char id)
         {
             Id = id;
             Children = new Dictionary<char, TreeCharNode>();
+            Words = new List<string>();
+        }
+
+        public TreeCharNode(char id, TreeCharNode parent) : this(id)
+        {
+            Parent = parent;
+        }
+    }
+
+    class StringSearchResult
+    {
+        public int Index;
+        public string Keyword;
+
+        public StringSearchResult(int index, string keyword)
+        {
+            Index = index;
+            Keyword = keyword;
         }
     }
 }
